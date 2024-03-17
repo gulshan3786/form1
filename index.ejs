@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #formContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between; /* Add space between form sections */
+        }
+
+        .form-section {
+            flex-basis: calc(100% / 2); /* Set to 50% width for two columns */
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-section form {
+            margin: 0;
+        }
+
+        .form-section form h3 {
+            margin-top: 20px;
+        }
+
+        .form-section form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-section form input {
+            width: calc(100% - 10px); /* Subtracting 10px for padding */
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+
+        .nav-menu {
+            /* Set the width of the navigation menu */
+            display: flex;
+            flex-direction: row;
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .nav-menu li {
+            margin-right: 20px;
+        }
+
+        .nav-menu li:last-child {
+            margin-right: 0; /* Remove right margin for the last li item */
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul class="nav-menu">
+            <li><a href="#" onclick="previousSection()">Previous</a></li>
+            <li><a href="#" onclick="showSection('basicDetails')">Basic Details</a></li>
+            <li><a href="#" onclick="showSection('educationDetails')">Education Details</a></li>
+          
+            <li><a href="#" onclick="nextSection()">Next</a></li>
+        </ul>
+    </nav>
+
+    <div id="formContainer">
+        <form id ="form" >
+        <div id="basicDetails" class="form-section active">
+            <h2>Basic Details</h2>
+           
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName">
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email">
+                <label for="phoneNumber">Phone Number:</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber">
+           
+        </div>
+
+        <div id="educationDetails" class="form-section">
+            <h2>Education Details</h2>
+          
+                <h3>Education Detail 1</h3>
+                <label for="board1">Board Name:</label>
+                <input type="text" id="board1" name="board[]">
+                <label for="passingYear1">Passing Year:</label>
+                <input type="text" id="passingYear1" name="passingYear[]">
+                <label for="percentage1">Percentage:</label>
+                <input type="text" id="percentage1" name="percentage[]">
+
+                <h3>Education Detail 2</h3>
+                <label for="board2">Board Name:</label>
+                <input type="text" id="board2" name="board[]">
+                <label for="passingYear2">Passing Year:</label>
+                <input type="text" id="passingYear2" name="passingYear[]">
+                <label for="percentage2">Percentage:</label>
+                <input type="text" id="percentage2" name="percentage[]">
+
+                <h3>Education Detail 3</h3>
+                <label for="board3">Board Name:</label>
+                <input type="text" id="board3" name="board[]">
+                <label for="passingYear3">Passing Year:</label>
+                <input type="text" id="passingYear3" name="passingYear[]">
+                <label for="percentage3">Percentage:</label>
+                <input type="text" id="percentage3" name="percentage[]">
+                <input type="button" onclick="submitForm()">
+        </div>
+
+       </form>
+    </div>
+
+    <script>
+        let currentSectionIndex = 0;
+        const sections = document.querySelectorAll('.form-section');['']
+    
+        function showSection(sectionId) {
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+            currentSectionIndex = Array.from(sections).findIndex(section => section.id === sectionId);
+        }
+    
+        function previousSection() {
+            if (currentSectionIndex > 0) {
+                currentSectionIndex--;
+                showSection(sections[currentSectionIndex].id);
+            }
+        }
+    
+        function nextSection() {
+            // Validate the current section before moving to the next section
+            if (!validateCurrentSection()) {
+                return; // If validation fails, do not proceed further
+            }
+    
+            // Proceed to the next section
+            if (currentSectionIndex < sections.length - 1) {
+                currentSectionIndex++;
+                showSection(sections[currentSectionIndex].id);
+            }
+        }
+    
+        // Function to validate the current section before navigating to the next section
+        function validateCurrentSection() {
+            const currentSection = document.querySelector('.form-section.active');
+            const currentSectionId = currentSection.id;
+    
+            // Validate the current section based on its ID
+            if (currentSectionId === 'basicDetails') {
+                return validateBasicDetails();
+            } else if (currentSectionId === 'educationDetails') {
+                return validateEducationDetails();
+            } else if (currentSectionId === 'workExperience') {
+                return validateWorkExperience();
+            }
+    
+            // Default to validation pass if section is not recognized
+            return true;
+        }
+    
+        // Function to handle next button click
+        function nextSection() {
+            // Validate the current section before moving to the next section
+            if (!validateCurrentSection()) {
+                return; // If validation fails, do not proceed further
+            }
+    
+            // Proceed to the next section
+            if (currentSectionIndex < sections.length - 1) {
+                currentSectionIndex++;
+                showSection(sections[currentSectionIndex].id);
+            }
+        }
+    
+        // Function to handle previous button click
+        function previousSection() {
+            // Proceed to the previous section
+            if (currentSectionIndex > 0) {
+                currentSectionIndex--;
+                showSection(sections[currentSectionIndex].id);
+            }
+        }
+    
+        // Function to validate the basic details section
+        function validateBasicDetails() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+    
+            // Check if any field is empty
+            if (firstName === '') {
+                alert('Please enter your first name.');
+                return false;
+            }
+    
+            if (lastName === '') {
+                alert('Please enter your last name.');
+                return false;
+            }
+    
+            if (email === '') {
+                alert('Please enter your email.');
+                return false;
+            }
+    
+            if (phoneNumber === '') {
+                alert('Please enter your phone number.');
+                return false;
+            }
+    
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address.');
+                return false;
+            }
+    
+            // Validate phone number format
+            const phoneRegex = /^\d{10}$/;
+            if (!phoneRegex.test(phoneNumber)) {
+                alert('Please enter a valid 10-digit phone number.');
+                return false;
+            }
+    
+            return true; // If all validations pass
+        }
+    
+        // Function to validate the education details section
+      // Function to validate the education details section
+function validateEducationDetails() {
+    const board1 = document.getElementById('board1').value.trim();
+    const passingYear1 = document.getElementById('passingYear1').value.trim();
+    const percentage1 = document.getElementById('percentage1').value.trim();
+
+    const board2 = document.getElementById('board2').value.trim();
+    const passingYear2 = document.getElementById('passingYear2').value.trim();
+    const percentage2 = document.getElementById('percentage2').value.trim();
+
+    const board3 = document.getElementById('board3').value.trim();
+    const passingYear3 = document.getElementById('passingYear3').value.trim();
+    const percentage3 = document.getElementById('percentage3').value.trim();
+
+    // Check if any field in any education detail set is empty
+    if (board1 === '' || passingYear1 === '' || percentage1 === '') {
+        alert('Please fill in all fields for education detail 1.');
+        return false;
+    }
+
+    if (board2 === '' || passingYear2 === '' || percentage2 === '') {
+        alert('Please fill in all fields for education detail 2.');
+        return false;
+    }
+
+    if (board3 === '' || passingYear3 === '' || percentage3 === '') {
+        alert('Please fill in all fields for education detail 3.');
+        return false;
+    }
+
+    // You can add additional validation logic here, such as checking if passing years are valid dates,
+    // and if percentages are within a certain range.
+
+    return true; // If all validations pass
+}
+
+    
+        // Function to validate the work experience section
+        function validateWorkExperience() {
+            // Add your validation logic here
+            return true; // Return true if validation passes
+        }
+    
+    showSection('basicDetails'); // Display the first section by default
+
+    async function submitForm() {
+    const form = document.getElementById('form');
+    const formData = new FormData(form);
+    const serializedFormData = {};
+
+for (const [key, value] of formData.entries()) {
+    const fieldName = key.replace('[]', ''); // Remove '[]' from field name
+    if (!serializedFormData[fieldName]) {
+        serializedFormData[fieldName] = [];
+    }
+    serializedFormData[fieldName].push(value);
+}
+
+    try {
+        const response = await fetch('/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(serializedFormData)
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+
+        console.log('Form data sent successfully:', data);
+
+        // Optionally, you can handle the response here
+    } catch (error) {
+        console.error('There was a problem with your fetch operation:', error);
+    }
+}
+
+    </script>
+    </body>
+</html>
